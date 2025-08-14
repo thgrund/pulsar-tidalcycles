@@ -97,13 +97,17 @@ The event highlighting allows to visualize the active events within a mini notat
 TidalCycles needs to be configured to send editor highlight events. This is usually done by modifying the `BootTidal.hs` file and adding an editor highlight target. Here is a working example:
 
 ```haskell
-let editorTarget = Target {oName = "editor", oAddress = "127.0.0.1", oPort = 6013, oLatency = 0.02, oSchedule = Pre BundleStamp, oWindow = Nothing, oHandshake = False, oBusPort = Nothing }
+let editorTarget = Target {oName = "editor", oAddress = "127.0.0.1", oPort = 6013, oLatency = 0.2, oSchedule = Pre BundleStamp, oWindow = Nothing, oHandshake = False, oBusPort = Nothing }
 let editorShape = OSCContext "/editor/highlights"
 
-tidal <- startStream (defaultConfig {cFrameTimespan = 1/50}) [(superdirtTarget {oLatency = 0.2}, [superdirtShape]), (editorTarget, [editorShape])]
+tidal <- startStream (defaultConfig {cFrameTimespan = 1/30, , cProcessAhead = (1/20)}) [(superdirtTarget {oLatency = 0.02}, [superdirtShape]), (editorTarget, [editorShape])]
 ```
 
 The path to the `BootTidal.hs` file can be found in the TidalCycles output console after TidalCycles has been booted in the editor.
+
+#### Framerate
+
+The event highlight animation is in relation to the refresh rate of the users display and the `cFrameTimespan` value of TidalCycles. This means, that the animation fps needs to be smaller then the denominator of the `cFrameTimespan` value. However a good value is somehow between `20 fps` and `30 fps`.
 
 #### Custom Styles
 
@@ -128,22 +132,8 @@ And it is possible to override the styles for every individual stream like this:
 
 The pattern of the css class is `.event-highlight-[streamID]`.
 
-Last but not least, it is possible to send osc messages to the pulsar editor, to override the css properties. This will only work, if the Osc Eval feature is enabled, because it uses the same listener. This is a SuperCollider example:
-
-```c++
-var pulsarOSC = NetAddr("127.0.0.1", 3333);
-
-pulsarOSC.sendMsg("/pulsar/event-highlighting/add-style", "id", "1", "css", "{background-color: white;}");
-```
-
-The css class cascades like this:
-
-`.event-highlight < .event-highlight-[streamID] < .event-highlight-osc-[streamID]`
-
-
-
 ### Osc Eval
-It's possible to evaluate tidal code with OSC messages.
+It's possibile to evaluate tidal code with OSC messages.
 
 #### Port
 The plugin is listening on this specified port for incoming osc messages:
