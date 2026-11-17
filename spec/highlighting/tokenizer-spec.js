@@ -1,7 +1,6 @@
 'use babel'
 
 const Tokenizer = require("../../lib/highlighting/tokenizer");
-const { MockEditors, makeEditor } = require("../helpers/mocks");
 
 describe('Tokenizer', () => {
 
