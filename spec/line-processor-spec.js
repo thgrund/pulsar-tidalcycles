@@ -1,7 +1,6 @@
 const LineProcessor = require("../lib/line-processor");
 
 describe('Line Processor', () => {
-
   describe('isValidTidalWordChar', () => {
     it('should truthify a valid digit', () => {
       expect(LineProcessor.isValidTidalWordChar('5')).toBe(true);
