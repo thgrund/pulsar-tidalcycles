@@ -2,7 +2,7 @@
 
 const Repl = require('../lib/repl.js');
 
-describe('repl send re-arm', () => {
+describe('repl send afterSend', () => {
   let ghci;
   let highlighter;
   let repl;
@@ -25,7 +25,7 @@ describe('repl send re-arm', () => {
     repl.ghci = ghci;
   });
 
-  it('should re-arm only after the closing brace of an expression block', () => {
+  it('should call afterSend only after the closing brace of an expression block', () => {
     repl.tidalSendLine(':{', undefined);
     expect(highlighter.afterSend).not.toHaveBeenCalled();
 
@@ -36,14 +36,14 @@ describe('repl send re-arm', () => {
     expect(highlighter.afterSend.calls.count()).toEqual(1);
   });
 
-  it('should re-arm after a single non-block command', () => {
+  it('should call afterSend after a single non-block command', () => {
     repl.tidalSendLine('mute 3', undefined);
 
     expect(ghci.writeLine).toHaveBeenCalledWith('mute 3');
     expect(highlighter.afterSend.calls.count()).toEqual(1);
   });
 
-  it('should not re-arm when the event highlighter is disabled', () => {
+  it('should not call afterSend when the event highlighter is disabled', () => {
     const plainRepl = new Repl(
       { logPromptOut: () => { }, logPromptErr: () => { } },
       { interactive: () => ghci },
